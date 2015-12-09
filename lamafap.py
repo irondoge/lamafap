@@ -23,14 +23,14 @@
 #  
 
 import sys
-import os				# for file manipulation
-import http.client		# for http requests
-import json				# for python parsing
-import re				# for string manipulation
+import os		# for file manipulation
+import http.client	# for http requests
+import json		# for python parsing
+import re		# for string manipulation
 import urllib.request	# for file downloading
 
 __version__ =	"1.0.0"
-OAUTH_KEY =		"YOUR KEY HERE"
+OAUTH_KEY =	"YOUR KEY HERE"
 CACHE_PATH =	os.path.expanduser("~/.fap")
 DOWNLOAD_PATH =	os.path.expanduser("~/Downloads/")
 
