@@ -3,8 +3,7 @@ Tumblr backup tool in python3. Goal : Save your tumblr likes locally.
 
 ### Get started
 
-Get yout tumblr application key: https://www.tumblr.com/oauth/apps.
-Then fill the first fields with your key and your default paths in the lamafap.py file.
+Just check the first lines of the lamafap.py file with your paths for your download directory and cache file.
 
 ### Execution
 * on linux
@@ -14,3 +13,7 @@ Then fill the first fields with your key and your default paths in the lamafap.p
     cd lamafap
     ./lamafap.py
   ```
+
+* on windows
+
+always boot to linux
