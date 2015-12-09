@@ -1,5 +1,5 @@
 # lamafap
-Tumblr backup tool in python3. Goal : Save your tumblr likes localy.
+Tumblr backup tool in python3. Goal : Save your tumblr likes locally.
 
 ### Get started
 
