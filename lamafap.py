@@ -29,12 +29,15 @@ import json				# for python parsing
 import re				# for string manipulation
 import urllib.request	# for file downloading
 
-__version__ =	"0.1.0"
-OAUTH_KEY =		"g4S6UsesyrutrPANSYR2g7iPzUoXAUnpWVZg3MQisqkjeCE7nD"
+__version__ =	"1.0.0"
+OAUTH_KEY =		"YOUR KEY HERE"
 CACHE_PATH =	os.path.expanduser("~/.fap")
 DOWNLOAD_PATH =	os.path.expanduser("~/Downloads/")
 
 def get_next_likes(co, addr):
+	"""main processing function for LikeStatus object
+	retrieve 20 next likes each time it get called"""
+
 	addr += "/likes?limit=20&offset=" + str(get_next_likes.ct) + "&api_key=" + OAUTH_KEY
 	get_next_likes.ct += 20
 	co.request("GET", addr)
@@ -52,8 +55,15 @@ def get_next_likes(co, addr):
 	return (posts, photos, pics)
 
 class LikesStatus:
+	"""parsing object for likes
+	contains user likes specific informations"""
+
 	pics = []
+	ok = True
 	def __init__(self, user):
+		"""LikeStatus constructor
+		init attributes"""
+
 		path = CACHE_PATH + "_" + user
 		self.cache = open(path, "r+" if os.access(path, os.F_OK) else "w+")
 		tmp = self.cache.read()
@@ -67,12 +77,10 @@ class LikesStatus:
 		self.newNbr = int(re.sub(r'.*"likes":([^,}]+).*', r"\1", tmp))
 		if int(nbr) == self.newNbr:
 			print("=== Nothing to do. ===")
+			self.ok = False
 			return
 		print("=== waiting for", self.newNbr, "posts ===")
-		get_next_likes.ct = 0
-		posts = 0
-		photos = 0
-		tmp = 0
+		get_next_likes.ct = posts = photos = tmp = 0
 		while True:
 			tmp = get_next_likes(co, addr)
 			if not tmp[0]: break
@@ -83,6 +91,9 @@ class LikesStatus:
 		print("=== get", posts, "posts and", len(self.pics), "photos in", photos, "posts ===")
 
 	def dl_new(self):
+		"""downloader method
+		download and save pic list to the default path"""
+
 		for pic in self.pics:
 			fname = DOWNLOAD_PATH + re.sub(r'.*/', r"", pic)
 			if os.access(fname, os.F_OK):
@@ -101,11 +112,14 @@ def usage():
 	return (1)
 
 def main(argv):
+	"""entry point
+	browse the user list to process"""
+
 	if not(len(argv)):
 		return (usage())
 	for user in argv:
 		likes = LikesStatus(user)
-		likes.dl_new()
+		if likes.ok: likes.dl_new()
 	return (0)
 
 if __name__ == '__main__':
