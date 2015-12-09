@@ -30,9 +30,9 @@ import re		# for string manipulation
 import urllib.request	# for file downloading
 
 __version__ =	"1.0.1"
-OAUTH_KEY =	"YOUR KEY HERE"
 CACHE_PATH =	os.path.expanduser("~/.fap")
 DOWNLOAD_PATH =	os.path.expanduser("~/Downloads/")
+OAUTH_KEY =	"g4S6UsesyrutrPANSYR2g7iPzUoXAUnpWVZg3MQisqkjeCE7nD"
 
 def get_next_likes(co, addr, end):
 	"""main processing function for LikeStatus object
