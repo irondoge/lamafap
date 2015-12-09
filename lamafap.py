@@ -29,20 +29,20 @@ import json		# for python parsing
 import re		# for string manipulation
 import urllib.request	# for file downloading
 
-__version__ =	"1.0.0"
+__version__ =	"1.0.1"
 OAUTH_KEY =	"YOUR KEY HERE"
 CACHE_PATH =	os.path.expanduser("~/.fap")
 DOWNLOAD_PATH =	os.path.expanduser("~/Downloads/")
 
-def get_next_likes(co, addr):
+def get_next_likes(co, addr, end):
 	"""main processing function for LikeStatus object
 	retrieve 20 next likes each time it get called"""
 
 	addr += "/likes?limit=20&offset=" + str(get_next_likes.ct) + "&api_key=" + OAUTH_KEY
-	get_next_likes.ct += 20
 	co.request("GET", addr)
 	r = json.loads(co.getresponse().read().decode("utf-8"))
 	posts = len(r["response"]["liked_posts"])
+	get_next_likes.ct += posts
 	photos = 0
 	pics = []
 	for post in r["response"]["liked_posts"]:
@@ -82,7 +82,7 @@ class LikesStatus:
 		print("=== waiting for", self.newNbr, "posts ===")
 		get_next_likes.ct = posts = photos = tmp = 0
 		while True:
-			tmp = get_next_likes(co, addr)
+			tmp = get_next_likes(co, addr, self.newNbr - posts < 20)
 			if not tmp[0]: break
 			posts += tmp[0]
 			photos += tmp[1]
@@ -94,18 +94,23 @@ class LikesStatus:
 		"""downloader method
 		download and save pic list to the default path"""
 
+		ct = ct2 = ct3 = 0
 		for pic in self.pics:
+			ct += 1
 			fname = DOWNLOAD_PATH + re.sub(r'.*/', r"", pic)
 			if os.access(fname, os.F_OK):
 				print("=== file already exists:", fname, "===")
+				ct2 += 1
 			else:
 				f = open(fname, "wb")
 				f.write(urllib.request.urlopen(pic).read())
 				f.close()
 				print("=== writing to", fname, "===")
+				ct3 += 1
 		self.cache.truncate()
 		self.cache.write(str(self.newNbr))
 		self.cache.close()
+		print(ct, "images checked:", ct2, "already downloaded and", ct3, "just downloaded")
 
 def usage():
 	print("Usage: lamafap username...")
